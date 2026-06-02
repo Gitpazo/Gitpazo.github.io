@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeadByExample</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --off-white: #f7f7f5;
+      --mid: #e8e8e4;
+      --muted: #888884;
+      --accent: #0a0a0a;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--white);
+      color: var(--black);
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 4rem;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    nav.scrolled { border-bottom-color: var(--mid); }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+      color: var(--black);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--black); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 4rem 6rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.1s forwards;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      font-weight: 400;
+      max-width: 14ch;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.25s forwards;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .hero-sub {
+      margin-top: 2.5rem;
+      font-size: 1.125rem;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 46ch;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.4s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.55s forwards;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 0.875rem 2rem;
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      border-radius: 100px;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .btn-primary:hover { background: #222; transform: translateY(-1px); }
+
+    .btn-ghost {
+      display: inline-block;
+      padding: 0.875rem 2rem;
+      background: transparent;
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      border-radius: 100px;
+      border: 1px solid var(--mid);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--black); transform: translateY(-1px); }
+
+    .hero-rule {
+      position: absolute;
+      right: 4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      writing-mode: vertical-rl;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mid);
+      display: none;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--mid);
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 7rem 4rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 3rem;
+      height: 1px;
+      background: var(--mid);
+    }
+
+    /* ── FAMILY SECTION ── */
+    .family-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .family-text h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+
+    .family-text p {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+
+    .family-text p strong {
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    .family-text .cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 2px;
+      transition: gap 0.2s;
+    }
+    .family-text .cta-link:hover { gap: 0.75rem; }
+
+    .family-card {
+      background: var(--off-white);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .family-card-stat {
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-number {
+      font-family: var(--serif);
+      font-size: 3.5rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--black);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    .family-card-rule { height: 1px; background: var(--mid); }
+
+    .family-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tag {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--muted);
+      border: 1px solid var(--mid);
+      border-radius: 100px;
+      padding: 0.3rem 0.85rem;
+    }
+
+    /* ── ABOUT SECTION ── */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .about-aside h3 {
+      font-family: var(--serif);
+      font-size: 1.75rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--black);
+    }
+
+    .about-aside .tagline {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .about-body p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: #444;
+      line-height: 1.8;
+      margin-bottom: 1.25rem;
+    }
+
+    .about-body p:first-child {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      color: var(--black);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .about-link {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .about-link:hover { color: var(--black); }
+    .about-link svg { width: 14px; height: 14px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--mid);
+      padding: 2.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .footer-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .footer-privacy {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      section { padding: 5rem 1.5rem; }
+      .family-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .about-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAVIGATION ── -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">LeadByExample</a>
+    <ul class="nav-links">
+      <li><a href="#family">For families</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="https://github.com/Gitpazo" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+  </nav>
+
+
+  <!-- ── HERO ── -->
+  <div style="position:relative; overflow:hidden;">
+    <div class="hero">
+      <p class="hero-eyebrow">Technology · Family · Identity</p>
+      <h1>You can't teach what you <em>don't</em> live.</h1>
+      <p class="hero-sub">
+        A small corner of the internet about using technology better —
+        at home with your kids, and at work with your systems.
+        No experts. Just honest experience.
+      </p>
+      <div class="hero-cta">
+        <a href="#family" class="btn-primary">Take the family check-in</a>
+        <a href="#about" class="btn-ghost">About this site</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <!-- ── FAMILY SECTION ── -->
+  <section id="family">
+    <div class="section-label reveal">For families</div>
+
+    <div class="family-layout">
+      <div class="family-text reveal">
+        <h2>The hardest part of screen time is your own.</h2>
+        <p>
+          Rules help. Parental controls help. But nothing works as well as
+          <strong>what your kids see you do</strong> when you think they're not watching.
+        </p>
+        <p>
+          This check-in isn't a test. There are no wrong answers.
+          It's a mirror — a few honest questions to help you see
+          where your family actually stands, and one or two small things you could try.
+        </p>
+        <p>
+          No account. No email. Nothing leaves your phone.
+        </p>
+        <a href="quiz.html" class="cta-link">
+          Start the family check-in →
+        </a>
+      </div>
+
+      <div class="family-card reveal">
+        <div class="family-card-stat">
+          <span class="stat-number">7</span>
+          <span class="stat-label">honest questions about life at home with screens</span>
+        </div>
+        <div class="family-card-rule"></div>
+        <div class="family-card-stat">
+          <span class="stat-number">4</span>
+          <span class="stat-label">levels — from just starting out to living it every day</span>
+        </div>
+        <div class="family-card-rule"></div>
+        <div class="family-card-stat">
+          <span class="stat-number">0</span>
+          <span class="stat-label">data collected. not a byte. not an email. nothing.</span>
+        </div>
+        <div class="family-card-rule"></div>
+        <div class="family-card-tags">
+          <span class="tag">No login</span>
+          <span class="tag">No tracking</span>
+          <span class="tag">No judgment</span>
+          <span class="tag">Shareable result</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ── ABOUT SECTION ── -->
+  <section id="about">
+    <div class="section-label reveal">About</div>
+
+    <div class="about-layout">
+      <div class="about-aside reveal">
+        <h3>Not an expert.<br/>Just someone who figured some things out.</h3>
+        <p class="tagline">
+          Gitpazo — IT professional, parent,
+          and occasional overthinker about technology.
+        </p>
+
+        <div class="about-links">
+          <a href="https://github.com/Gitpazo" target="_blank" rel="noopener" class="about-link">
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <div class="about-body reveal">
+        <p>This site exists because I kept giving people advice I wasn't sure existed anywhere in a simple form.</p>
+        <p>
+          On the family side — I'd watch parents hand phones to kids as pacifiers, then wonder why
+          they couldn't get them back. I've done it myself. The research on this is clear but the honest
+          conversation between parents is rare. So I built a tool to start it.
+        </p>
+        <p>
+          On the work side — I spent years working with Microsoft Entra ID, making mistakes,
+          finding fixes, and realising the documentation rarely tells you what to do
+          when something goes wrong in the real world. I'm not the most senior person in the room.
+          But sometimes that's exactly who you need to hear from.
+        </p>
+        <p>
+          Nothing here is sponsored. Nothing is behind a login. If something helps you,
+          share it with someone it might also help.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <a href="#" class="footer-logo">LeadByExample</a>
+    <span class="footer-privacy">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+      </svg>
+      No analytics. No cookies. No tracking.
+    </span>
+    <span class="footer-note">Built and maintained by Gitpazo · CC0</span>
+  </footer>
+
+
+  <script>
+    // Nav border on scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
