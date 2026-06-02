@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- =====================================================
+       CHANGE THE TITLE HERE — shown in browser tab
+       ===================================================== -->
+  <title>Family Screen Check-In</title>
+
+  <!-- Icons (free, loads from the internet) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
+  <style>
+    /* =====================================================
+       COLOURS — change these to match your site's style
+       ===================================================== */
+    :root {
+      --accent:       #534AB7;   /* main purple — buttons, highlights        */
+      --accent-dark:  #3C3489;   /* darker purple — button hover             */
+      --accent-light: #EEEDFE;   /* very light purple — backgrounds          */
+      --text:         #1a1a1a;   /* main text colour                         */
+      --text-muted:   #6b7280;   /* secondary / hint text                    */
+      --border:       #e5e7eb;   /* lines and card borders                   */
+      --bg:           #ffffff;   /* page background                          */
+      --bg-surface:   #f9f9f8;   /* slightly off-white for panels            */
+      --radius-sm:    8px;       /* small corner rounding                    */
+      --radius-lg:    14px;      /* large corner rounding (cards)            */
+    }
+
+    /* =====================================================
+       TYPOGRAPHY
+       Change font-family below to use a different font.
+       Google Fonts are free — pick one at fonts.google.com
+       and replace the @import URL and font-family value.
+       ===================================================== */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* =====================================================
+       PAGE LAYOUT
+       max-width controls how wide the quiz gets on big screens
+       ===================================================== */
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+
+    /* ---------- HEADER ---------- */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px 10px;
+      margin-bottom: 1rem;
+    }
+    .hdr { margin-bottom: 1.5rem; }
+    .hdr h1 {
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: .5rem;
+    }
+    .hdr p {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 520px;
+    }
+
+    /* ---------- PRIVACY NOTICE ---------- */
+    .privacy {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    /* ---------- PROGRESS BAR ---------- */
+    .pbar { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 2rem; overflow: hidden; }
+    .pfill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .4s ease; width: 0%; }
+
+    /* ---------- QUESTION STEP ---------- */
+    .step { display: none; }
+    .step.on { display: block; }
+
+    .q-tag {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .4rem;
+    }
+    .q-text {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: .4rem;
+    }
+    .q-hint {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    /* ---------- ANSWER OPTIONS ---------- */
+    .opts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      background: var(--bg);
+    }
+    .opt:hover { border-color: var(--accent); background: var(--bg-surface); }
+    .opt.sel {
+      border: 2px solid var(--accent);
+      background: var(--accent-light);
+    }
+    .dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .opt.sel .dot { border-color: var(--accent); background: var(--accent); }
+    .opt.sel .dot::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; }
+    .opt-txt { font-size: 15px; line-height: 1.4; }
+
+    /* ---------- NAV BUTTONS ---------- */
+    .nav { display: flex; justify-content: space-between; align-items: center; }
+    .step-count { font-size: 13px; color: var(--text-muted); }
+    .btn {
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all .15s;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+    }
+    .btn:hover { background: var(--bg-surface); }
+    .btn.pri { background: var(--accent); color: white; border-color: var(--accent); }
+    .btn.pri:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+    .btn:disabled { opacity: .3; cursor: not-allowed; }
+
+    /* ---------- RESULT SCREEN ---------- */
+    .result { display: none; }
+    .result.on { display: block; }
+
+    .rcard {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      background: var(--bg);
+    }
+    .rillus { width: 100%; display: block; }
+    .rcontent { padding: 1.5rem; }
+    .r-level { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: .4rem; }
+    .r-name { font-size: 26px; font-weight: 500; margin-bottom: .5rem; }
+    .r-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; }
+
+    .sbar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: .4rem; }
+    .sfill { height: 100%; border-radius: 3px; width: 0; transition: width 1s ease .3s; }
+    .slabels { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+    /* Area breakdown grid */
+    .areas { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; margin-bottom: 1.5rem; }
+    .area { background: var(--bg-surface); border-radius: var(--radius-sm); padding: 10px 8px; text-align: center; border: 1px solid var(--border); }
+    .a-name { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .05em; font-weight: 500; }
+    .a-score { font-size: 18px; font-weight: 500; }
+
+    /* Three suggested steps */
+    .steps-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+    .step-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      background: var(--bg-surface);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .si-icon { flex-shrink: 0; color: var(--accent); margin-top: 2px; }
+
+    /* Share box */
+    .share-box { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; background: var(--bg-surface); }
+    .share-box p { font-size: 13px; color: var(--text-muted); margin-bottom: .75rem; }
+    .share-txt {
+      font-family: monospace;
+      font-size: 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      color: var(--text);
+      width: 100%;
+      resize: none;
+      line-height: 1.5;
+    }
+    .share-acts { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+    .restart {
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      background: none;
+      border: none;
+    }
+    .restart:hover { color: var(--text); }
+
+    /* Section sub-heading */
+    .sub-heading { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- =====================================================
+       QUIZ SECTION
+       ===================================================== -->
+  <div id="qsec">
+
+    <!-- HEADER — change the title and subtitle below -->
+    <div class="hdr">
+      <div class="badge">
+        <i class="ti ti-heart"></i>
+        Family screen check-in  <!-- ← Badge label -->
+      </div>
+      <h1>How are screens really working in your home?</h1>  <!-- ← Main title -->
+      <p>7 honest questions. No right or wrong. No accounts. Just a mirror.</p>  <!-- ← Subtitle -->
+    </div>
+
+    <!-- PRIVACY NOTICE — edit or remove if you want -->
+    <div class="privacy">
+      <i class="ti ti-eye-off" style="font-size:16px;flex-shrink:0"></i>
+      <span>Everything stays in your browser — nothing is stored or sent anywhere.</span>
+    </div>
+
+    <!-- Progress bar (auto-fills as user goes through questions) -->
+    <div class="pbar"><div class="pfill" id="pf"></div></div>
+
+    <!-- Questions are injected here by JavaScript -->
+    <div id="steps"></div>
+
+    <!-- Back / Next navigation -->
+    <div class="nav">
+      <span class="step-count" id="scnt">Question 1 of 7</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="bbk" onclick="go(-1)" disabled>Back</button>
+        <button class="btn pri" id="bnx" onclick="go(1)" disabled>Next</button>
+      </div>
+    </div>
+
+  </div><!-- end #qsec -->
+
+
+  <!-- =====================================================
+       RESULT SECTION (hidden until quiz is complete)
+       ===================================================== -->
+  <div class="result" id="rsec">
+
+    <div class="hdr">
+      <div class="badge"><i class="ti ti-star"></i> Your result</div>
+      <h1 id="rtitle"></h1>
+    </div>
+
+    <!-- Illustrated card with score visual -->
+    <div class="rcard">
+      <svg id="rsvg" class="rillus" viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="rcontent">
+        <div class="r-level">Where you are right now</div>
+        <div class="r-name" id="rname"></div>
+        <div class="r-desc" id="rdesc"></div>
+        <div>
+          <div class="sbar"><div class="sfill" id="sfill"></div></div>
+          <div class="slabels"><span>Just starting out</span><span id="spct"></span><span>Living it every day</span></div>
+        </div>
+        <!-- Area score tiles -->
+        <div class="areas" id="areas"></div>
+      </div>
+    </div>
+
+    <!-- Three suggested actions -->
+    <p class="sub-heading">Three things to try this week</p>
+    <div class="steps-list" id="slist"></div>
+
+    <!-- Shareable text card -->
+    <div class="share-box">
+      <p>Share your result — no personal info included.</p>
+      <textarea class="share-txt" id="stxt" rows="4" readonly></textarea>
+      <div class="share-acts">
+        <button class="btn pri" id="cpybtn" onclick="doCopy()">
+          <i class="ti ti-copy"></i> Copy
+        </button>
+        <button class="restart" onclick="restart()">Start over</button>
+      </div>
+    </div>
+
+  </div><!-- end #rsec -->
+
+</div><!-- end .page -->
+
+
+<script>
+/* =============================================================
+   QUESTIONS
+   To edit a question: change "q" (the question text)
+   To edit the hint below the question: change "hint"
+   To edit an answer option: change "t" (the text)
+   DO NOT change "s" (the score 0–4) — this drives the results
+   To add a question: copy an entire {...} block, paste after
+   the last one (before the closing ]), and update the total
+   in the navigation text at the bottom of this file.
+   ============================================================= */
+const QUESTIONS = [
+
+  /* --- Question 1 --- */
+  {
+    tag:  "Your own habits",    /* ← small label shown above the question */
+    q:    "When you're at home with your kids, how often do you find yourself checking your phone?",
+    hint: "Kids copy what they see far more than what they're told. Your habits set the tone.",
+    opts: [
+      { t: "I'm on my phone a lot — it's just how it is",                                       s: 0 },
+      { t: "More than I'd like, especially after work",                                          s: 1 },
+      { t: "I try to put it away when we're spending time together",                             s: 3 },
+      { t: "I'm pretty intentional about it — phone-free time is a real thing in our house",    s: 4 }
+    ]
+  },
+
+  /* --- Question 2 --- */
+  {
+    tag:  "Bedtime and devices",
+    q:    "Where do your kids' phones or tablets end up when it's time for bed?",
+    hint: "Sleep is the first thing screens take from kids — and tired kids are harder to parent.",
+    opts: [
+      { t: "In their room — they need it for their alarm",                            s: 0 },
+      { t: "In their room, but they know the rules",                                  s: 1 },
+      { t: "We charge devices outside bedrooms — most of the time",                   s: 3 },
+      { t: "Always outside the bedroom — it's a firm household rule",                 s: 4 }
+    ]
+  },
+
+  /* --- Question 3 --- */
+  {
+    tag:  "Knowing what they're watching",
+    q:    "When your child says 'I'm just watching videos', how often do you actually check?",
+    hint: "You don't need to be a spy. But a quick peek now and then keeps you connected to their world.",
+    opts: [
+      { t: "Almost never — I trust them",                                                          s: 0 },
+      { t: "Only if something feels off",                                                           s: 2 },
+      { t: "Fairly regularly, and I try to make it feel normal, not suspicious",                   s: 4 },
+      { t: "I have parental controls set up so I don't need to check manually",                    s: 3 }
+    ]
+  },
+
+  /* --- Question 4 --- */
+  {
+    tag:  "Talking about the scary stuff",
+    q:    "Have you ever talked to your kids about things that can go wrong online — like a proper conversation, not just a warning?",
+    hint: "The best protection isn't a filter — it's a child who knows they can come to you when something feels wrong.",
+    opts: [
+      { t: "Not really — I wouldn't know how to start",                                                      s: 0 },
+      { t: "Once, after something happened that worried me",                                                  s: 1 },
+      { t: "A couple of times — I know I should do it more regularly",                                       s: 2 },
+      { t: "Yes, we talk about it as things come up, and they know they can tell me anything",               s: 4 }
+    ]
+  },
+
+  /* --- Question 5 --- */
+  {
+    tag:  "Screen time limits",
+    q:    "Does your family have any agreed rules about when or how long screens can be used?",
+    hint: "It doesn't have to be strict or complicated. Even a rough shared understanding helps everyone.",
+    opts: [
+      { t: "Not really — it's pretty much whenever they want",                                             s: 0 },
+      { t: "There are supposed to be rules but they're hard to enforce",                                   s: 1 },
+      { t: "We have rough limits that work most of the time",                                              s: 3 },
+      { t: "Yes — clear, agreed limits that the whole family follows (including me)",                      s: 4 }
+    ]
+  },
+
+  /* --- Question 6 --- */
+  {
+    tag:  "What you assume",
+    q:    "Do you ever think 'I wonder what they've already come across online that I don't know about?'",
+    hint: "Assuming everything is fine is the easiest thing to do. But most parents who ask end up discovering more than they expected.",
+    opts: [
+      { t: "No — I'm pretty confident they're only seeing age-appropriate stuff",                    s: 1 },
+      { t: "Sometimes, but I prefer not to think about it too much",                                 s: 1 },
+      { t: "Yes, and I try to stay curious about their online life without prying",                  s: 3 },
+      { t: "Yes — we've even had some honest conversations off the back of that assumption",         s: 4 }
+    ]
+  },
+
+  /* --- Question 7 --- */
+  {
+    tag:  "Life beyond the screen",
+    q:    "How much of your family's time together is genuinely screen-free — doing something else entirely?",
+    hint: "The best counter to too much screen time isn't restriction. It's a life full enough that screens aren't the most interesting option.",
+    opts: [
+      { t: "Honestly, screens are on most of the time we're home",                                 s: 0 },
+      { t: "We have some activities together but screens creep in",                                s: 2 },
+      { t: "We regularly do things together where no one's on a device",                           s: 3 },
+      { t: "We have hobbies, routines and rituals that have nothing to do with screens",           s: 4 }
+    ]
+  }
+
+];/* ← end QUESTIONS — add new questions above this line */
+
+
+/* =============================================================
+   RESULT LEVELS
+   There are 4 levels based on total score.
+   To edit a level:
+     name  → the title shown on the result card
+     emoji → the icon used in the illustration
+     desc  → the paragraph describing this result
+     steps → the three suggested actions (array of 3 strings)
+   min/max are score ranges — don't change unless you add questions
+   ============================================================= */
+const POSTURES = [
+
+  /* --- Level 1 (lowest score) --- */
+  {
+    name: "Just finding your feet",
+    color: "#E24B4A",   /* red */
+    min: 0, max: 8,
+    emoji: "🌱",
+    desc: "You're at the beginning of this. That's okay — most parents are. The fact that you took this quiz means you're already thinking about it, which puts you ahead of where you were five minutes ago.",
+    steps: [
+      "Tonight: put all devices — including yours — on charge in the kitchen before bed",
+      "This week: choose one meal where no one checks their phone",
+      "Ask your child what their favourite thing online is, then just listen — no judgment"
+    ]
+  },
+
+  /* --- Level 2 --- */
+  {
+    name: "Aware, but winging it",
+    color: "#EF9F27",   /* amber */
+    min: 9, max: 16,
+    emoji: "🔍",
+    desc: "You know screens are something to think about, and you've started. Things are still a bit inconsistent — the rules exist, but life gets in the way. You're not alone. Most families are right here.",
+    steps: [
+      "Turn one vague rule into a specific one — 'not too much' becomes 'phones away by 9pm'",
+      "Have one open conversation with your child about something they've seen online recently",
+      "Check your own screen time stats honestly — show your kids the number too"
+    ]
+  },
+
+  /* --- Level 3 --- */
+  {
+    name: "Getting it mostly right",
+    color: "#1D9E75",   /* green */
+    min: 17, max: 22,
+    emoji: "🏡",
+    desc: "You're doing the important things more often than not. Your kids have guardrails, you talk about this stuff, and you're aware of your own habits. The work now is consistency — keeping it up when things get busy.",
+    steps: [
+      "Make your best habit official — write it down as a family agreement",
+      "Find the one area where rules slip most and address just that one thing",
+      "Tell another parent what's working in your house — they probably need to hear it"
+    ]
+  },
+
+  /* --- Level 4 (highest score) --- */
+  {
+    name: "Living it every day",
+    color: "#534AB7",   /* purple */
+    min: 23, max: 28,
+    emoji: "⭐",
+    desc: "You've built something real here. Screens have a place in your family, but they don't run the house. You lead by example, you talk openly, and your kids know where the lines are — and why they're there.",
+    steps: [
+      "Write down what works for your family — other parents will want to know",
+      "Revisit your approach as your kids get older — what works now may need adjusting",
+      "You're doing great. Take a moment to recognise that."
+    ]
+  }
+
+];/* ← end POSTURES */
+
+
+/* =============================================================
+   AREA BREAKDOWN
+   Each area groups one or more questions by index (0-based).
+   The score for that area is the average of those questions.
+   label  → shown in the tile
+   qs     → which question indices count toward this area
+   ============================================================= */
+const AREAS = [
+  { label: "Your example",   qs: [0] },
+  { label: "Bedtime",        qs: [1] },
+  { label: "Staying curious",qs: [2, 5] },
+  { label: "Talking openly", qs: [3] },
+  { label: "Clear limits",   qs: [4] },
+  { label: "Life offline",   qs: [6] }
+];
+
+
+/* =============================================================
+   SHARECARD FOOTER TEXT
+   The line that appears at the bottom of the copyable result.
+   Change it to your own website or tagline.
+   ============================================================= */
+const SHARE_FOOTER = "zerotrust.parent — no accounts, no tracking";
+
+
+/* =============================================================
+   INTERNAL LOGIC — you probably don't need to edit below here
+   ============================================================= */
+
+/* Shuffle helper — randomises answer order */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let cur = 0;
+let ans = new Array(QUESTIONS.length).fill(null);
+const shuffledQ = QUESTIONS.map(q => ({ ...q, opts: shuffle(q.opts) }));
+
+/* Build question DOM */
+function buildSteps() {
+  const c = document.getElementById('steps');
+  shuffledQ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'step' + (i === 0 ? ' on' : '');
+    d.id = 'step' + i;
+    d.innerHTML = `
+      <div class="q-tag">${q.tag}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-hint">${q.hint}</div>
+      <div class="opts">
+        ${q.opts.map((o, j) => `
+          <div class="opt" id="o${i}_${j}" onclick="pick(${i},${j},${o.s})">
+            <div class="dot"></div>
+            <div class="opt-txt">${o.t}</div>
+          </div>`).join('')}
+      </div>`;
+    c.appendChild(d);
+  });
+}
+
+/* Handle answer selection */
+function pick(qi, oi, score) {
+  ans[qi] = { oi, score };
+  document.querySelectorAll(`#step${qi} .opt`).forEach((el, j) => el.classList.toggle('sel', j === oi));
+  document.getElementById('bnx').disabled = false;
+  /* Update button label on last question */
+  if (cur === QUESTIONS.length - 1) document.getElementById('bnx').textContent = 'See my result';
+}
+
+/* Navigate forward/back */
+function go(dir) {
+  const nx = cur + dir;
+  if (nx < 0 || nx > QUESTIONS.length) return;
+  document.getElementById('step' + cur).classList.remove('on');
+  cur = nx;
+
+  if (cur === QUESTIONS.length) { showResult(); return; }
+
+  document.getElementById('step' + cur).classList.add('on');
+  document.getElementById('pf').style.width = (cur / QUESTIONS.length * 100) + '%';
+
+  /* Update question counter — change "7" here if you add/remove questions */
+  document.getElementById('scnt').textContent = `Question ${cur + 1} of ${QUESTIONS.length}`;
+
+  document.getElementById('bbk').disabled = cur === 0;
+  document.getElementById('bnx').disabled = ans[cur] === null;
+  document.getElementById('bnx').textContent = (cur === QUESTIONS.length - 1 && ans[cur] !== null) ? 'See my result' : 'Next';
+}
+
+/* Draw the SVG illustration on the result card */
+function drawIllus(svg, posture, pct) {
+  const accent = posture.color;
+  const bgMap = { '#534AB7': '#EEEDFE', '#1D9E75': '#E1F5EE', '#EF9F27': '#FAEEDA', '#E24B4A': '#FCEBEB' };
+  const txMap = { '#534AB7': '#3C3489', '#1D9E75': '#085041', '#EF9F27': '#633806', '#E24B4A': '#791F1F' };
+  const bg  = bgMap[accent] || '#f5f5f5';
+  const tc  = txMap[accent] || accent;
+  const barW = Math.round(160 * pct / 100);
+
+  svg.innerHTML = `
+    <rect width="680" height="200" fill="${bg}"/>
+    <g transform="translate(40,100)">
+      <circle cx="0" cy="-30" r="22" fill="${accent}" opacity=".9"/>
+      <rect x="-18" y="-4" width="36" height="44" rx="8" fill="${accent}" opacity=".7"/>
+      <line x1="0" y1="10" x2="-22" y2="40" stroke="${accent}" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+      <line x1="0" y1="10" x2="22"  y2="40" stroke="${accent}" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+      <line x1="0" y1="-4" x2="-26" y2="22" stroke="${accent}" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+      <line x1="0" y1="-4" x2="26"  y2="22" stroke="${accent}" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+    </g>
+    <g transform="translate(100,100)">
+      <circle cx="0" cy="-18" r="14" fill="${accent}" opacity=".7"/>
+      <rect x="-11" y="-2" width="22" height="28" rx="6" fill="${accent}" opacity=".5"/>
+    </g>
+    <g transform="translate(130,100)">
+      <circle cx="0" cy="-12" r="10" fill="${accent}" opacity=".6"/>
+      <rect x="-8" y="-1" width="16" height="20" rx="5" fill="${accent}" opacity=".4"/>
+    </g>
+    <rect x="190" y="50" width="120" height="100" rx="10" fill="white" opacity=".6"/>
+    <rect x="200" y="66" width="100" height="14" rx="4" fill="${accent}" opacity=".3"/>
+    <rect x="200" y="86" width="80"  height="8"  rx="3" fill="${accent}" opacity=".2"/>
+    <rect x="200" y="100" width="90" height="8"  rx="3" fill="${accent}" opacity=".2"/>
+    <rect x="200" y="114" width="70" height="8"  rx="3" fill="${accent}" opacity=".15"/>
+    <circle cx="255" cy="168" r="18" fill="${accent}" opacity=".8"/>
+    <text x="255" y="174" text-anchor="middle" font-family="sans-serif" font-size="14" fill="white">${pct}%</text>
+    <rect x="350" y="70" width="200" height="90" rx="10" fill="white" opacity=".5"/>
+    <text x="370" y="98"  font-family="sans-serif" font-size="22" fill="${accent}">${posture.emoji}</text>
+    <text x="400" y="101" font-family="sans-serif" font-size="15" font-weight="500" fill="${tc}">${posture.name}</text>
+    <text x="370" y="122" font-family="sans-serif" font-size="12" fill="${tc}" opacity=".8">Your family screen posture</text>
+    <rect x="370" y="136" width="160"  height="6" rx="3" fill="${accent}" opacity=".15"/>
+    <rect x="370" y="136" width="${barW}" height="6" rx="3" fill="${accent}" opacity=".8"/>
+    <circle cx="590" cy="90"  r="35" fill="${accent}" opacity=".12"/>
+    <circle cx="620" cy="160" r="20" fill="${accent}" opacity=".08"/>
+    <circle cx="560" cy="170" r="12" fill="${accent}" opacity=".10"/>`;
+}
+
+/* Calculate and display results */
+function showResult() {
+  document.getElementById('qsec').style.display = 'none';
+  const rs = document.getElementById('rsec');
+  rs.style.display = 'block';
+  rs.classList.add('on');
+
+  const total = ans.reduce((s, a) => s + (a ? a.score : 0), 0);
+  const max   = QUESTIONS.length * 4;
+  const pct   = Math.round(total / max * 100);
+
+  const p = POSTURES.find(x => total >= x.min && total <= x.max) || POSTURES[0];
+
+  document.getElementById('rtitle').textContent = 'Your family: ' + p.name;
+  document.getElementById('rname').textContent  = p.name;
+  document.getElementById('rname').style.color  = p.color;
+  document.getElementById('rdesc').textContent  = p.desc;
+  document.getElementById('sfill').style.background = p.color;
+  document.getElementById('spct').textContent   = pct + '%';
+  setTimeout(() => { document.getElementById('sfill').style.width = pct + '%'; }, 100);
+
+  drawIllus(document.getElementById('rsvg'), p, pct);
+
+  /* Render area tiles */
+  const arEl = document.getElementById('areas');
+  arEl.innerHTML = '';
+  AREAS.forEach(area => {
+    const score = area.qs.reduce((s, qi) => s + (ans[qi] ? ans[qi].score : 0), 0);
+    const mx    = area.qs.length * 4;
+    const ap    = Math.round(score / mx * 100);
+    const col   = ap >= 70 ? '#1D9E75' : ap >= 40 ? '#BA7517' : '#A32D2D';
+    const d     = document.createElement('div');
+    d.className = 'area';
+    d.innerHTML = `<div class="a-name">${area.label}</div><div class="a-score" style="color:${col}">${ap}%</div>`;
+    arEl.appendChild(d);
+  });
+
+  /* Render suggested steps */
+  document.getElementById('slist').innerHTML = p.steps.map(s => `
+    <div class="step-item">
+      <i class="ti ti-arrow-right si-icon" style="font-size:16px"></i>
+      <span>${s}</span>
+    </div>`).join('');
+
+  /* Build shareable text */
+  const lines = [
+    `Family Screen Check-In`,
+    `Result: ${p.name} (${pct}%)`,
+    ``,
+    `Area breakdown:`,
+    ...AREAS.map(area => {
+      const sc = area.qs.reduce((s, qi) => s + (ans[qi] ? ans[qi].score : 0), 0);
+      const mx = area.qs.length * 4;
+      return `  ${area.label}: ${Math.round(sc / mx * 100)}%`;
+    }),
+    ``,
+    `"The best time to talk to your kids about screens is before something goes wrong."`,
+    SHARE_FOOTER
+  ];
+  document.getElementById('stxt').value = lines.join('\n');
+}
+
+/* Copy share text */
+function doCopy() {
+  const t = document.getElementById('stxt');
+  t.select();
+  document.execCommand('copy');
+  const b = document.getElementById('cpybtn');
+  b.textContent = 'Copied!';
+  setTimeout(() => { b.innerHTML = '<i class="ti ti-copy"></i> Copy'; }, 2000);
+}
+
+/* Reset to start */
+function restart() {
+  cur = 0;
+  ans = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('qsec').style.display = 'block';
+  document.getElementById('rsec').style.display = 'none';
+  document.getElementById('rsec').classList.remove('on');
+  document.querySelectorAll('.step').forEach((el, i) => el.classList.toggle('on', i === 0));
+  document.querySelectorAll('.opt').forEach(el => el.classList.remove('sel'));
+  document.getElementById('pf').style.width = '0%';
+  document.getElementById('scnt').textContent = `Question 1 of ${QUESTIONS.length}`;
+  document.getElementById('bbk').disabled = true;
+  document.getElementById('bnx').disabled = true;
+  document.getElementById('bnx').textContent = 'Next';
+}
+
+/* Kick everything off */
+buildSteps();
+</script>
+</body>
+</html>
