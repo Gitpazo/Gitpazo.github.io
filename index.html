@@ -14,394 +14,77 @@
       --off-white: #f7f7f5;
       --mid: #e8e8e4;
       --muted: #888884;
-      --accent: #0a0a0a;
       --serif: 'DM Serif Display', Georgia, serif;
       --sans: 'DM Sans', system-ui, sans-serif;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--white); color: var(--black); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
-    body {
-      font-family: var(--sans);
-      background: var(--white);
-      color: var(--black);
-      font-size: 17px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 4rem;
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.3s;
-    }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; background: rgba(255,255,255,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color 0.3s; }
     nav.scrolled { border-bottom-color: var(--mid); }
-
-    .nav-logo {
-      font-family: var(--serif);
-      font-size: 1.25rem;
-      letter-spacing: -0.01em;
-      color: var(--black);
-      text-decoration: none;
-    }
+    .nav-logo { font-family: var(--serif); font-size: 1.25rem; letter-spacing: -0.01em; color: var(--black); text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 2.5rem; }
     .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-links a {
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 0.02em;
-      transition: color 0.2s;
-    }
+    .nav-links a { font-size: 0.875rem; font-weight: 400; color: var(--muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
     .nav-links a:hover { color: var(--black); }
 
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 8rem 4rem 6rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
+    .lang-toggle { display: flex; align-items: center; gap: 0; border: 1px solid var(--mid); border-radius: 100px; overflow: hidden; font-size: 0.75rem; font-weight: 500; }
+    .lang-btn { padding: 0.3rem 0.75rem; cursor: pointer; border: none; background: transparent; color: var(--muted); font-family: var(--sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em; transition: background 0.2s, color 0.2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
 
-    .hero-eyebrow {
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 2rem;
-      opacity: 0;
-      animation: fadeUp 0.8s ease 0.1s forwards;
-    }
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 8rem 4rem 6rem; max-width: 1100px; margin: 0 auto; }
+    .hero-eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards; }
+    .hero h1 { font-family: var(--serif); font-size: clamp(3rem, 7vw, 6.5rem); line-height: 1.04; letter-spacing: -0.02em; font-weight: 400; max-width: 16ch; opacity: 0; animation: fadeUp 0.9s ease 0.25s forwards; }
+    .hero h1 em { font-style: italic; color: var(--muted); }
+    .hero-sub { margin-top: 2.5rem; font-size: 1.125rem; font-weight: 300; color: var(--muted); max-width: 46ch; line-height: 1.7; opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards; }
+    .hero-cta { margin-top: 3rem; display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.9s ease 0.55s forwards; }
 
-    .hero h1 {
-      font-family: var(--serif);
-      font-size: clamp(3rem, 7vw, 6.5rem);
-      line-height: 1.04;
-      letter-spacing: -0.02em;
-      font-weight: 400;
-      max-width: 14ch;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 0.25s forwards;
-    }
-
-    .hero h1 em {
-      font-style: italic;
-      color: var(--muted);
-    }
-
-    .hero-sub {
-      margin-top: 2.5rem;
-      font-size: 1.125rem;
-      font-weight: 300;
-      color: var(--muted);
-      max-width: 46ch;
-      line-height: 1.7;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 0.4s forwards;
-    }
-
-    .hero-cta {
-      margin-top: 3rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 0.55s forwards;
-    }
-
-    .btn-primary {
-      display: inline-block;
-      padding: 0.875rem 2rem;
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--sans);
-      font-size: 0.9rem;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      text-decoration: none;
-      border-radius: 100px;
-      transition: transform 0.2s, background 0.2s;
-    }
+    .btn-primary { display: inline-block; padding: 0.875rem 2rem; background: var(--black); color: var(--white); font-family: var(--sans); font-size: 0.9rem; font-weight: 500; letter-spacing: 0.02em; text-decoration: none; border-radius: 100px; transition: transform 0.2s, background 0.2s; }
     .btn-primary:hover { background: #222; transform: translateY(-1px); }
-
-    .btn-ghost {
-      display: inline-block;
-      padding: 0.875rem 2rem;
-      background: transparent;
-      color: var(--black);
-      font-family: var(--sans);
-      font-size: 0.9rem;
-      font-weight: 400;
-      letter-spacing: 0.02em;
-      text-decoration: none;
-      border-radius: 100px;
-      border: 1px solid var(--mid);
-      transition: border-color 0.2s, transform 0.2s;
-    }
+    .btn-ghost { display: inline-block; padding: 0.875rem 2rem; background: transparent; color: var(--black); font-family: var(--sans); font-size: 0.9rem; font-weight: 400; letter-spacing: 0.02em; text-decoration: none; border-radius: 100px; border: 1px solid var(--mid); transition: border-color 0.2s, transform 0.2s; }
     .btn-ghost:hover { border-color: var(--black); transform: translateY(-1px); }
 
-    .hero-rule {
-      position: absolute;
-      right: 4rem;
-      top: 50%;
-      transform: translateY(-50%);
-      writing-mode: vertical-rl;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--mid);
-      display: none;
-    }
+    .divider { width: 100%; height: 1px; background: var(--mid); }
 
-    /* ── DIVIDER ── */
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--mid);
-    }
+    section { max-width: 1100px; margin: 0 auto; padding: 7rem 4rem; }
+    .section-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem; }
+    .section-label::after { content: ''; flex: 1; max-width: 3rem; height: 1px; background: var(--mid); }
 
-    /* ── SECTION BASE ── */
-    section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 7rem 4rem;
-    }
+    .family-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .family-text h2 { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1.5rem; }
+    .family-text p { font-size: 1rem; font-weight: 300; color: var(--muted); line-height: 1.75; margin-bottom: 1rem; }
+    .family-text p strong { color: var(--black); font-weight: 500; }
+    .cta-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem; font-size: 0.9rem; font-weight: 500; color: var(--black); text-decoration: none; border-bottom: 1px solid var(--black); padding-bottom: 2px; transition: gap 0.2s; }
+    .cta-link:hover { gap: 0.75rem; }
 
-    .section-label {
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 3rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      max-width: 3rem;
-      height: 1px;
-      background: var(--mid);
-    }
-
-    /* ── FAMILY SECTION ── */
-    .family-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: center;
-    }
-
-    .family-text h2 {
-      font-family: var(--serif);
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 400;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-      margin-bottom: 1.5rem;
-    }
-
-    .family-text p {
-      font-size: 1rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.75;
-      margin-bottom: 1rem;
-    }
-
-    .family-text p strong {
-      color: var(--black);
-      font-weight: 500;
-    }
-
-    .family-text .cta-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--black);
-      text-decoration: none;
-      border-bottom: 1px solid var(--black);
-      padding-bottom: 2px;
-      transition: gap 0.2s;
-    }
-    .family-text .cta-link:hover { gap: 0.75rem; }
-
-    .family-card {
-      background: var(--off-white);
-      border-radius: 20px;
-      padding: 3rem 2.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .family-card-stat {
-      display: flex;
-      flex-direction: column;
-    }
-    .stat-number {
-      font-family: var(--serif);
-      font-size: 3.5rem;
-      line-height: 1;
-      letter-spacing: -0.03em;
-      color: var(--black);
-    }
-    .stat-label {
-      font-size: 0.85rem;
-      font-weight: 300;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
-
+    .family-card { background: var(--off-white); border-radius: 20px; padding: 3rem 2.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .family-card-stat { display: flex; flex-direction: column; }
+    .stat-number { font-family: var(--serif); font-size: 3.5rem; line-height: 1; letter-spacing: -0.03em; color: var(--black); }
+    .stat-label { font-size: 0.85rem; font-weight: 300; color: var(--muted); margin-top: 0.25rem; }
     .family-card-rule { height: 1px; background: var(--mid); }
+    .family-card-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag { font-size: 0.78rem; font-weight: 400; color: var(--muted); border: 1px solid var(--mid); border-radius: 100px; padding: 0.3rem 0.85rem; }
 
-    .family-card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .tag {
-      font-size: 0.78rem;
-      font-weight: 400;
-      color: var(--muted);
-      border: 1px solid var(--mid);
-      border-radius: 100px;
-      padding: 0.3rem 0.85rem;
-    }
-
-    /* ── ABOUT SECTION ── */
-    .about-layout {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 6rem;
-      align-items: start;
-    }
-
-    .about-aside h3 {
-      font-family: var(--serif);
-      font-size: 1.75rem;
-      font-weight: 400;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      color: var(--black);
-    }
-
-    .about-aside .tagline {
-      margin-top: 1rem;
-      font-size: 0.85rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .about-body p {
-      font-size: 1.05rem;
-      font-weight: 300;
-      color: #444;
-      line-height: 1.8;
-      margin-bottom: 1.25rem;
-    }
-
-    .about-body p:first-child {
-      font-family: var(--serif);
-      font-size: 1.5rem;
-      color: var(--black);
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      line-height: 1.4;
-      margin-bottom: 1.5rem;
-    }
-
-    .about-links {
-      display: flex;
-      gap: 1.5rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .about-link {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--muted);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: color 0.2s;
-    }
+    .about-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; align-items: start; }
+    .about-aside h3 { font-family: var(--serif); font-size: 1.75rem; font-weight: 400; letter-spacing: -0.02em; line-height: 1.2; color: var(--black); }
+    .about-aside .tagline { margin-top: 1rem; font-size: 0.85rem; font-weight: 300; color: var(--muted); line-height: 1.6; }
+    .about-body p { font-size: 1.05rem; font-weight: 300; color: #444; line-height: 1.8; margin-bottom: 1.25rem; }
+    .about-body p:first-child { font-family: var(--serif); font-size: 1.5rem; color: var(--black); font-weight: 400; letter-spacing: -0.01em; line-height: 1.4; margin-bottom: 1.5rem; }
+    .about-links { display: flex; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; }
+    .about-link { font-size: 0.85rem; font-weight: 500; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
     .about-link:hover { color: var(--black); }
     .about-link svg { width: 14px; height: 14px; }
 
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--mid);
-      padding: 2.5rem 4rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+    footer { border-top: 1px solid var(--mid); padding: 2.5rem 4rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; color: var(--black); text-decoration: none; }
+    .footer-note { font-size: 0.78rem; color: var(--muted); font-weight: 300; }
+    .footer-privacy { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
 
-    .footer-logo {
-      font-family: var(--serif);
-      font-size: 1rem;
-      color: var(--black);
-      text-decoration: none;
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    .footer-note {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-weight: 300;
-    }
-
-    .footer-privacy {
-      font-size: 0.78rem;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       nav { padding: 1.25rem 1.5rem; }
       .nav-links { display: none; }
@@ -415,82 +98,66 @@
 </head>
 <body>
 
-  <!-- ── NAVIGATION ── -->
   <nav id="nav">
     <a href="#" class="nav-logo">LeadByExample</a>
-    <ul class="nav-links">
-      <li><a href="#family">For families</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="https://github.com/Gitpazo" target="_blank" rel="noopener">GitHub</a></li>
-    </ul>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#family" data-i18n="nav.family">For families</a></li>
+        <li><a href="#about" data-i18n="nav.about">About</a></li>
+        <li><a href="https://github.com/Gitpazo" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+      </div>
+    </div>
   </nav>
 
-
-  <!-- ── HERO ── -->
-  <div style="position:relative; overflow:hidden;">
+  <div style="position:relative;overflow:hidden;">
     <div class="hero">
-      <p class="hero-eyebrow">Technology · Family · Identity</p>
-      <h1>You can't teach what you <em>don't</em> live.</h1>
-      <p class="hero-sub">
-        A small corner of the internet about using technology better —
-        at home with your kids, and at work with your systems.
-        No experts. Just honest experience.
-      </p>
+      <p class="hero-eyebrow" data-i18n="hero.eyebrow">Technology · Family · Identity</p>
+      <h1 data-i18n-html="hero.h1">You can't teach what you <em>don't</em> live.</h1>
+      <p class="hero-sub" data-i18n="hero.sub">A small corner of the internet about using technology better — at home with your kids, and at work with your systems. No experts. Just honest experience.</p>
       <div class="hero-cta">
-        <a href="#family" class="btn-primary">Take the family check-in</a>
-        <a href="#about" class="btn-ghost">About this site</a>
+        <a href="quiz.html" class="btn-primary" data-i18n="hero.cta1">Take the family check-in</a>
+        <a href="#about" class="btn-ghost" data-i18n="hero.cta2">About this site</a>
       </div>
     </div>
   </div>
 
   <div class="divider"></div>
 
-
-  <!-- ── FAMILY SECTION ── -->
   <section id="family">
-    <div class="section-label reveal">For families</div>
-
+    <div class="section-label reveal" data-i18n="family.label">For families</div>
     <div class="family-layout">
       <div class="family-text reveal">
-        <h2>The hardest part of screen time is your own.</h2>
-        <p>
-          Rules help. Parental controls help. But nothing works as well as
-          <strong>what your kids see you do</strong> when you think they're not watching.
-        </p>
-        <p>
-          This check-in isn't a test. There are no wrong answers.
-          It's a mirror — a few honest questions to help you see
-          where your family actually stands, and one or two small things you could try.
-        </p>
-        <p>
-          No account. No email. Nothing leaves your phone.
-        </p>
-        <a href="quiz.html" class="cta-link">
-          Start the family check-in →
-        </a>
+        <h2 data-i18n="family.h2">The hardest part of screen time is your own.</h2>
+        <p data-i18n-html="family.p1">Rules help. Parental controls help. But nothing works as well as <strong>what your kids see you do</strong> when you think they're not watching.</p>
+        <p data-i18n="family.p2">This check-in isn't a test. There are no wrong answers. It's a mirror — a few honest questions to help you see where your family actually stands, and one or two small things you could try.</p>
+        <p data-i18n="family.p3">No account. No email. Nothing leaves your phone.</p>
+        <a href="quiz.html" class="cta-link" data-i18n="family.cta">Start the family check-in →</a>
       </div>
-
       <div class="family-card reveal">
         <div class="family-card-stat">
           <span class="stat-number">7</span>
-          <span class="stat-label">honest questions about life at home with screens</span>
+          <span class="stat-label" data-i18n="family.stat1">honest questions about life at home with screens</span>
         </div>
         <div class="family-card-rule"></div>
         <div class="family-card-stat">
           <span class="stat-number">4</span>
-          <span class="stat-label">levels — from just starting out to living it every day</span>
+          <span class="stat-label" data-i18n="family.stat2">levels — from just starting out to living it every day</span>
         </div>
         <div class="family-card-rule"></div>
         <div class="family-card-stat">
           <span class="stat-number">0</span>
-          <span class="stat-label">data collected. not a byte. not an email. nothing.</span>
+          <span class="stat-label" data-i18n="family.stat3">data collected. not a byte. not an email. nothing.</span>
         </div>
         <div class="family-card-rule"></div>
         <div class="family-card-tags">
-          <span class="tag">No login</span>
-          <span class="tag">No tracking</span>
-          <span class="tag">No judgment</span>
-          <span class="tag">Shareable result</span>
+          <span class="tag" data-i18n="family.tag1">No login</span>
+          <span class="tag" data-i18n="family.tag2">No tracking</span>
+          <span class="tag" data-i18n="family.tag3">No judgment</span>
+          <span class="tag" data-i18n="family.tag4">Shareable result</span>
         </div>
       </div>
     </div>
@@ -498,83 +165,139 @@
 
   <div class="divider"></div>
 
-
-  <!-- ── ABOUT SECTION ── -->
   <section id="about">
-    <div class="section-label reveal">About</div>
-
+    <div class="section-label reveal" data-i18n="about.label">About</div>
     <div class="about-layout">
       <div class="about-aside reveal">
-        <h3>Not an expert.<br/>Just someone who figured some things out.</h3>
-        <p class="tagline">
-          Gitpazo — IT professional, parent,
-          and occasional overthinker about technology.
-        </p>
-
+        <h3 data-i18n="about.h3">Not an expert.<br/>Just someone who figured some things out.</h3>
+        <p class="tagline" data-i18n="about.tagline">Gitpazo — IT professional, parent, and occasional overthinker about technology.</p>
         <div class="about-links">
           <a href="https://github.com/Gitpazo" target="_blank" rel="noopener" class="about-link">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             GitHub
           </a>
         </div>
       </div>
-
       <div class="about-body reveal">
-        <p>This site exists because I kept giving people advice I wasn't sure existed anywhere in a simple form.</p>
-        <p>
-          On the family side — I'd watch parents hand phones to kids as pacifiers, then wonder why
-          they couldn't get them back. I've done it myself. The research on this is clear but the honest
-          conversation between parents is rare. So I built a tool to start it.
-        </p>
-        <p>
-          On the work side — I spent years working with Microsoft Entra ID, making mistakes,
-          finding fixes, and realising the documentation rarely tells you what to do
-          when something goes wrong in the real world. I'm not the most senior person in the room.
-          But sometimes that's exactly who you need to hear from.
-        </p>
-        <p>
-          Nothing here is sponsored. Nothing is behind a login. If something helps you,
-          share it with someone it might also help.
-        </p>
+        <p data-i18n="about.p1">This site exists because I kept giving people advice I wasn't sure existed anywhere in a simple form.</p>
+        <p data-i18n="about.p2">On the family side — I'd watch parents hand phones to kids as pacifiers, then wonder why they couldn't get them back. I've done it myself. The research on this is clear but the honest conversation between parents is rare. So I built a tool to start it.</p>
+        <p data-i18n="about.p3">On the work side — I spent years working with Microsoft Entra ID, making mistakes, finding fixes, and realising the documentation rarely tells you what to do when something goes wrong in the real world. I'm not the most senior person in the room. But sometimes that's exactly who you need to hear from.</p>
+        <p data-i18n="about.p4">Nothing here is sponsored. Nothing is behind a login. If something helps you, share it with someone it might also help.</p>
       </div>
     </div>
   </section>
 
-
-  <!-- ── FOOTER ── -->
   <footer>
     <a href="#" class="footer-logo">LeadByExample</a>
     <span class="footer-privacy">
-      <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-      </svg>
-      No analytics. No cookies. No tracking.
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
+      <span data-i18n="footer.privacy">No analytics. No cookies. No tracking.</span>
     </span>
-    <span class="footer-note">Built and maintained by Gitpazo · CC0</span>
+    <span class="footer-note" data-i18n="footer.note">Built and maintained by Gitpazo · CC0</span>
   </footer>
 
-
   <script>
-    // Nav border on scroll
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 40);
-    }, { passive: true });
+  const STRINGS = {
+    en: {
+      "nav.family": "For families",
+      "nav.about": "About",
+      "hero.eyebrow": "Technology · Family · Identity",
+      "hero.h1": "You can't teach what you <em>don't</em> live.",
+      "hero.sub": "A small corner of the internet about using technology better — at home with your kids, and at work with your systems. No experts. Just honest experience.",
+      "hero.cta1": "Take the family check-in",
+      "hero.cta2": "About this site",
+      "family.label": "For families",
+      "family.h2": "The hardest part of screen time is your own.",
+      "family.p1": "Rules help. Parental controls help. But nothing works as well as <strong>what your kids see you do</strong> when you think they're not watching.",
+      "family.p2": "This check-in isn't a test. There are no wrong answers. It's a mirror — a few honest questions to help you see where your family actually stands, and one or two small things you could try.",
+      "family.p3": "No account. No email. Nothing leaves your phone.",
+      "family.cta": "Start the family check-in →",
+      "family.stat1": "honest questions about life at home with screens",
+      "family.stat2": "levels — from just starting out to living it every day",
+      "family.stat3": "data collected. not a byte. not an email. nothing.",
+      "family.tag1": "No login",
+      "family.tag2": "No tracking",
+      "family.tag3": "No judgment",
+      "family.tag4": "Shareable result",
+      "about.label": "About",
+      "about.h3": "Not an expert.<br/>Just someone who figured some things out.",
+      "about.tagline": "Gitpazo — IT professional, parent, and occasional overthinker about technology.",
+      "about.p1": "This site exists because I kept giving people advice I wasn't sure existed anywhere in a simple form.",
+      "about.p2": "On the family side — I'd watch parents hand phones to kids as pacifiers, then wonder why they couldn't get them back. I've done it myself. The research on this is clear but the honest conversation between parents is rare. So I built a tool to start it.",
+      "about.p3": "On the work side — I spent years working with Microsoft Entra ID, making mistakes, finding fixes, and realising the documentation rarely tells you what to do when something goes wrong in the real world. I'm not the most senior person in the room. But sometimes that's exactly who you need to hear from.",
+      "about.p4": "Nothing here is sponsored. Nothing is behind a login. If something helps you, share it with someone it might also help.",
+      "footer.privacy": "No analytics. No cookies. No tracking.",
+      "footer.note": "Built and maintained by Gitpazo · CC0"
+    },
+    es: {
+      "nav.family": "Para familias",
+      "nav.about": "Sobre este sitio",
+      "hero.eyebrow": "Tecnología · Familia · Identidad",
+      "hero.h1": "No puedes enseñar lo que <em>no</em> practicas.",
+      "hero.sub": "Un pequeño rincón de internet sobre cómo usar la tecnología mejor — en casa con tus hijos, y en el trabajo con tus sistemas. Sin expertos. Solo experiencia honesta.",
+      "hero.cta1": "Haz el test familiar",
+      "hero.cta2": "Sobre este sitio",
+      "family.label": "Para familias",
+      "family.h2": "La parte más difícil del tiempo de pantalla es la tuya.",
+      "family.p1": "Las normas ayudan. El control parental ayuda. Pero nada funciona tan bien como <strong>lo que tus hijos ven que haces tú</strong> cuando crees que no te están mirando.",
+      "family.p2": "Este test no es un examen. No hay respuestas incorrectas. Es un espejo — unas pocas preguntas honestas para ayudarte a ver dónde está realmente tu familia, y una o dos cosas pequeñas que podrías intentar.",
+      "family.p3": "Sin cuenta. Sin correo. Nada sale de tu dispositivo.",
+      "family.cta": "Empezar el test familiar →",
+      "family.stat1": "preguntas honestas sobre la vida en casa con pantallas",
+      "family.stat2": "niveles — desde los primeros pasos hasta vivirlo cada día",
+      "family.stat3": "datos recogidos. ni un byte. ni un correo. nada.",
+      "family.tag1": "Sin registro",
+      "family.tag2": "Sin rastreo",
+      "family.tag3": "Sin juicios",
+      "family.tag4": "Resultado compartible",
+      "about.label": "Sobre este sitio",
+      "about.h3": "No soy un experto.<br/>Solo alguien que fue descubriendo cosas.",
+      "about.tagline": "Gitpazo — profesional de IT, padre, y alguien que le da demasiadas vueltas a la tecnología.",
+      "about.p1": "Este sitio existe porque me encontré dando consejos que no sabía si existían en ningún sitio de forma sencilla.",
+      "about.p2": "En el lado familiar — veía a padres darles el móvil a sus hijos como chupete, y luego preguntarse por qué no podían recuperarlo. Yo también lo he hecho. La investigación sobre esto es clara, pero la conversación honesta entre padres es escasa. Así que construí una herramienta para empezarla.",
+      "about.p3": "En el lado profesional — pasé años trabajando con Microsoft Entra ID, cometiendo errores, encontrando soluciones, y dándome cuenta de que la documentación rara vez te dice qué hacer cuando algo falla en el mundo real. No soy la persona más senior de la sala. Pero a veces eso es exactamente lo que necesitas escuchar.",
+      "about.p4": "Aquí no hay patrocinadores. Nada está detrás de un registro. Si algo te es útil, compártelo con alguien a quien también pueda ayudar.",
+      "footer.privacy": "Sin analíticas. Sin cookies. Sin rastreo.",
+      "footer.note": "Creado y mantenido por Gitpazo · CC0"
+    }
+  };
 
-    // Scroll reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), i * 80);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach(el => observer.observe(el));
+  let currentLang = localStorage.getItem('lbe-lang') || 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lbe-lang', lang);
+    document.documentElement.lang = lang;
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    const s = STRINGS[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (s[key] !== undefined) el.textContent = s[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (s[key] !== undefined) el.innerHTML = s[key];
+    });
+  }
+
+  // Nav border on scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Apply saved language on load
+  setLang(currentLang);
   </script>
-
 </body>
 </html>
